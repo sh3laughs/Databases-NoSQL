@@ -1,0 +1,62 @@
+// DSO108 - Databases
+	// Lesson 6 - Getting Started With NoSQL
+    // Page 12 - Hands-On
+
+// Part 1
+    // 1.  Create three more users of your choosing, using the insertOne() 
+            // query, and add them to the appusers collection.
+        // Include at least the firstName, lastName, and age fields. Feel free 
+            // to also include any other fields you think would be useful data 
+            // for an app user.
+        // Caution! Please take a screenshot of each query you run (since you are 
+            // inserting each user one-by-one using insertOne(), you will run at 
+            // least three queries) and save it to your NoSQL-HandsOn1 text 
+            // document.
+db.appusers.insertOne({lastName: 'Dough', firstName: 'Jane', age: 35, gender: 'f',
+    darkMode: true, email: 'jane@dough.com'})
+// output: doc added to collection, as validated by results pane
+
+db.appusers.insertOne({lastName: 'Dough', firstName: 'John', age: 38, gender: 'm',
+    darkMode: false, email: 'john@dough.com'})
+// output: doc added to collection, as validated by results pane
+
+db.appusers.insertOne({lastName: 'Dough', firstName: 'Junior', age: 7, gender: 'm',
+    darkMode: true, email: 'junior@dough.com', favoriteColor: 'Blue'})
+// output: doc added to collection, as validated by results pane
+
+    // 2.  Next, run a basic find() query to see all of your documents within your 
+        // database through the Mongo Shell.
+db.appusers.find({})
+// output: all docs from collection previewed in results pane
+
+// Part 2
+    // 1.  Create a new collection within your database through Atlas.
+        // This new collection should be named cars.
+db.createCollection('cars')
+// output: collection created, as validated by results pane
+
+    // 2.  Insert five cars into this collection using the insertMany() query.
+        // Include the following fields: make, model, color, year, fourDoor, and 
+            // fourWheelDrive.
+        // The last two fields, fourDoor and fourWheelDrive, should be of type 
+            // Boolean (i.e. true or false).
+db.cars.insertMany([
+    {make: 'Bentley', model: 'Bentayga', color: 'Black Night', year: 2023,
+        fourDoor: true, fourWheelDrive: false},
+    {make: 'Lamborghini', model: 'Aventador', color: 'Azure Sea', year: 2023,
+        fourDoor: true, fourWheelDrive: false},
+    {make: 'Ford', model: 'Mustang', color: 'Cherry Red', year: 1965,
+        fourDoor: true, fourWheelDrive: false},
+    {make: 'Chevrolet', model: 'Stingray Corvette', color: 'Pacific Blue', year: 1969,
+        fourDoor: true, fourWheelDrive: false},
+    {make: 'DeLorean', model: 'DMC', color: 'Silver', year: 1981,
+        fourDoor: true, fourWheelDrive: false}
+])
+// output: 5 doc's added to collection, as validated by results pane
+
+    // 3.  Once that is done, run a find() query to see your newly created documents.
+db.cars.find({})
+// output: all docs from collection previewed in results pane
+
+    // 4.  Lastly, return to Atlas and view your collection and documents there.
+// done separately via 

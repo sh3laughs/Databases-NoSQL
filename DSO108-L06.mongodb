@@ -1,0 +1,45 @@
+// DSO108 - Databases
+	// Lesson 6 - Getting Started With NoSQL
+
+// Page 7 - MongoDB Collections
+db.createCollection('appusers');
+// output: collection created , as validated by results pane
+
+
+// Page 10 - Inserting Documents
+db.appusers.insertOne({_id: 1, lastName: 'Pumpernickel', firstName: 
+    'Georgina', middleName: 'Sasquatch', age: 27, gender: 'f'})
+// output: doc added to collection, as validated by results pane
+
+db.appusers.insertOne({_id: 2, lastName: 'Wilson', firstName: 
+    'Coderboy', age: 18, favoriteColor: 'blue'})
+// output: doc added to collection, as validated by results pane
+
+db.appusers.find({})
+// output: both docs added above to collection previewed in results
+    // pane
+
+db.appusers.insertMany([
+    {lastName: 'Anstruther', firstName: 'Jimmy', age: 21},
+    {lastName: 'Stevens', firstName: 'Amelia', age: 28},
+    {lastName: 'Hopkins', firstName: 'Fred', age: 35, favoriteColor: 
+        'Green'}
+])
+// output: 3 docs added to collection, as validated by results pane
+
+db.appusers.find({})
+// output: all 5 docs added to collection previewed in results pane
+    // note: first 2 have '_id' set, since that field was defined in
+    // the inserts; last batch of 3 have a '$oid' field that was 
+    // auto-added as unique identifiers as the values for '_id'
+
+db.movies.insertMany([
+    {title: 'Shawshank Redemption', director: 'Frank Darabont', 
+        yearReleased: 1994},
+    {title: 'The Dark Knight', director: 'Christopher Nolan', 
+        yearReleased: 2008},
+    {title: "It's a Wonderful Life", director: 'Frank Capra', 
+        yearReleased: 1946}
+])
+// output: collection created and 3 docs added to it, as validated by 
+    // results pane
