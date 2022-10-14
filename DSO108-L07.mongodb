@@ -1,0 +1,267 @@
+// DSO108 - Databases
+	// Lesson 7 - Querying Documents
+
+// Page 2 - Syntax
+db.appusers.find({});
+// output: collection previewed in results pane
+
+
+// Page 3 - Query Operators
+db.appusers.find({_id:{$eq: 1}});
+// output: doc with ID = 1 previewed in results pane
+
+db.appusers.find({_id:{$ne: 1}});
+// output: docs with an ID ≠ 1 previewed in results pane
+
+db.appusers.find({_id:{$gt: 1}});
+// output: docs with an ID > 1 previewed in results pane
+
+db.appusers.find({_id:{$gte: 2}});
+// output: docs with an ID ≥ 2 previewed in results pane
+
+db.appusers.find({_id:{$lt: 2}});
+// output: docs with an ID < 2 previewed in results pane
+
+db.appusers.find({_id:{$lte: 2}});
+// output: docs with an ID ≤ 2 previewed in results pane
+
+// note that all the above queries only retrieved doc's with integers
+    // as ID's (not those that were auto-added as strings)
+
+db.inventory.insertMany([
+{ item: "journal", qty: 25, size: { h: 14, w: 21, uom: "cm" }, status: "A", 
+    price: 16.49, sale: true },
+{ item: "spiral notebook", qty: 50, size: { h: 8.5, w: 11, uom: "in" }, 
+    status: "A", price: 4.79, sale: false },
+{ item: "paper", qty: 100, size: { h: 8.5, w: 11, uom: "in" }, status: "D", 
+    price: 6.99, sale: true },
+{ item: "day planner", qty: 75, size: { h: 22.85, w: 30, uom: "cm" }, 
+    status: "D", price: 25.29, sale: true },
+{ item: "calendar", size: { h: 21.75, w: 17, uom: "in" }, status: "B", 
+    price: 5.99, sale: false },
+{ item: "scissor", qty: 15, size: { h: 8, w: 4.25, uom: "in" }, status: "B", 
+    price: 11.59, sale: true },
+{ item: "tape dispenser", qty: 5, size: { h: 3, w: 7, uom: "in" }, status: "A", 
+    price: 3.09, sale: true }
+]);
+// output: new collection created with 7 doc's, as validated by results pane
+
+db.inventory.find( { qty: { $in: [ 5, 15 ] } } );
+// output: doc's retrieved that have a quantity of 5 or 15
+
+db.inventory.find( { qty: { $nin: [ 5, 15 ] } } );
+// output: doc's retrieved that do not have a quantity of 5 or 15
+
+
+// Page 4 - Logical Operators
+db.inventory.find({$and: [{price: {$ne: 6.99}}, {price: {$exists: true}}]});
+// output: doc's which have a price, but the price is ≠ $6.99 previewed in 
+    // results pane 
+
+db.inventory.find({$or: [{qty: {$lt: 20}}, {price: 16.49}]});
+// output: doc's which have a quantity less than 20 and/or a $16.49 price
+    // previewed in results pane
+
+db.inventory.find({
+    $and: [
+        {$or: [{price: {$eq: 4.79}}, {price: {$eq: 3.09}}]},
+        {$or: [{sale: true}, {qty: {$lt: 20}}]}
+    ]
+});
+// output: doc's with a price of $4.79 or $3.09 which also have a sale
+    // running and/ or a quantity less than 20 previewed in results pane
+
+db.inventory.find({price: {$not: {$gt: 4.80}}});
+// output: doc's that do have no price OR the price is not > $4.80 (ie: 
+    // ≤ or null) previewed in results pane
+
+db.inventory.find({$nor: [{price: {$gte: 5.99}}, {sale: {$eq: true}}]});
+// output: doc's that meet these criteria previewed in results pane:
+    // 1. they do have the price field, but the price is not ≥ (ie: < or 
+        // null) AND they do have the sale field but sale ≠ true (ie: false
+        // or null)
+    // 2. they do have the price field, but the price is not ≥ (ie: < or 
+        // null) AND they don't have the sale field
+    // 3. they don't have the price field AND they do have the sale field 
+        // but sale ≠ true (ie: false or null) 
+    // 4. they don't have the price field AND they don't have the sale field
+
+
+// Page 5 - Element Operators
+db.inventory.find({qty: {$exists: true, $nin: [5, 15]}});
+// output: doc's that have a quantity field, and its value is not 5 or 15
+    // previewed in results pane
+
+db.inventory.find({item: {$type: 'string'}});
+// output: doc's with the item field with a string value previewed in 
+    // results pane
+
+
+// Page 6 - Array Operators
+db.inventory.insertMany([
+    {code: "xyz", tags: [ "school", "book", "bag", "headphone", 
+        "appliance" ], qty: [
+        { size: "S", num: 10, color: "blue" },
+        { size: "M", num: 45, color: "blue" },
+        { size: "L", num: 100, color: "green" }
+        ]
+    },
+    {code: "abc", tags: [ "appliance", "school", "book" ], qty: [
+        { size: "6", num: 100, color: "green" },
+        { size: "6", num: 50, color: "blue" },
+        { size: "8", num: 100, color: "brown" }
+        ]
+    },
+    {code: "efg", tags: [ "school", "book" ], qty: [
+        { size: "S", num: 10, color: "blue" },
+        { size: "M", num: 100, color: "blue" },
+        { size: "L", num: 100, color: "green" }
+        ]
+    },
+    {code: "ijk", tags: [ "electronics", "school" ], 
+        qty: [{size: "M", num: 100, color: "green" }]
+    }
+]);
+// output: new doc's added to collection 
+    // note: pulled from: https://www.mongodb.com/docs/manual/reference/operator/query/all/#mongodb-query-op.-all
+
+db.inventory.find({tags: {$all: ['school', 'book']}});
+// output: doc's with tags field that contains school and book
+    // values in its array previewed in results pane
+
+db.survey.insertMany( [
+   { "_id": 1, "results": [ { "product": "abc", "score": 10 },
+                            { "product": "xyz", "score": 5 } ] },
+   { "_id": 2, "results": [ { "product": "abc", "score": 8 },
+                            { "product": "xyz", "score": 7 } ] },
+   { "_id": 3, "results": [ { "product": "abc", "score": 7 },
+                            { "product": "xyz", "score": 8 } ] },
+   { "_id": 4, "results": [ { "product": "abc", "score": 7 },
+                            { "product": "def", "score": 8 } ] }
+] );
+// output: collection created and 4 doc's added to it, as validated
+    // in results pane
+    // note: pulled from: https://www.mongodb.com/docs/manual/reference/operator/query/elemMatch/#mongodb-query-op.-elemMatch
+
+db.survey.find({results: {$elemMatch: {product: 'xyz', 
+    score: {$gte: 8}}}});
+// output: a single doc previewed in results pane with an xyz 
+    // product and score 8 in a single array
+    // note: I expected this to include doc's whose results arrays
+        // included either value, not both - will test further...
+
+db.scores.insertMany([
+    {_id: 1, results: [82, 85, 88]},
+    {_id: 2, results: [75, 88, 89]}
+]);
+// output: collection created and 2 doc's added to it, as validated
+    // in results pane
+    // note: pulled from: https://www.mongodb.com/docs/manual/reference/operator/query/elemMatch/#mongodb-query-op.-elemMatch
+
+db.scores.find({results: {$elemMatch: {$gte: 80, $lt: 85}}});
+// output: a single doc's results field previewed in results pane
+    // with at least one value ≥ 80 and at least one value < 85
+    // note: this validates results above - that the defined field 
+    // must have all of the specified values in the array for at 
+    // least one of its values
+
+db.inventory.find({tags: {$size: 3}});
+// output: one doc which has a tags field with an array with 3 
+    // values previewed in results pane
+
+db.inventory.find({},{tags: 1, item: 1});
+// output: docs previewed in results pane that have the tags and/ 
+    // or item fields, with only those projected fields + the ID 
+    // field for each doc
+
+db.inventory.find({},{tags: 0, item: 0});
+// output: docs previewed in results pane without the tags or item 
+    // fields
+
+
+    // From workshop: https://vimeo.com/413344478
+
+// Had to find this site to be able to get the data from the
+    // workshop to play along
+    // https://www.chegg.com/homework-help/questions-and-answers/begin-please-run-following-query-insert-new-collection-database-mongodb-dbmoviesinsertmany-q101010408
+db.movies.insertMany([
+        {_id: 1, title: "Wonder Woman", director: 
+            "Patty Jenkins", yearReleased: 2017, leadActors: 
+            ["Gal Gadot", "Chris Pine", "Robin Wright"], 
+            lengthInMin: 141, genre: ["Action", "Adventure", 
+            "Fantasy"], MPAA: "PG-13" },
+        {_id: 2, title: "Cloud Atlas", director: "Tom Tykwer", 
+            yearReleased: 2012, leadActors: ["Tom Hanks", 
+            "Halle Berry", "Hugh Grant", "Jim Broadbent", 
+            "Jim Sturgess", "Hugo Weaving"], lengthInMin: 172, 
+            genre: ["Action", "Drama", "Mystery"], MPAA: "R" },
+        {_id: 3, title: "Pan's Labyrinth", director: 
+            "Guillermo del Torro", yearReleased: 2006, 
+            leadActors: ["Ivana Baquero", "Ariadna Gil", 
+            "Sergi Lopez"], lengthInMin: 118, genre: ["Drama", 
+            "Fantasy", "War", "Foreign"], MPAA: "R" },
+        {_id: 4, title: "Gone With the Wind", director: 
+            "Victor Fleming", yearReleased: 1939, leadActors: 
+            ["Clark Gable", "Vivien Leigh", "Thomas Mitchell", 
+            "Olivia de Havilland", "Leslie Howard"], 
+            lengthInMin: 238, genre: ["Drama", "History", 
+            "Romance"], MPAA: "G" },
+        {_id: 5, title: "Spaceballs", director: "Mel Brooks", 
+            yearReleased: 1987, leadActors: ["Mel Brooks", 
+            "John Candy", "Rick Moranis", "Bill Pullman", 
+            "Daphne Zuniga"], lengthInMin: 96, genre: 
+            ["Adventure", "Comedy", "Sci-fi"], MPAA: "PG" },
+        {_id: 6, title: "Silence of the Lambs", director: 
+            "Jonathan Demme", yearReleased: 1991, leadActors: 
+            ["Jodie Foster", "Anthony Hopkins", "Anthony Heald"], 
+            lengthInMin: 118, genre: ["Crime", "Drama", 
+            "Thriller"], MPAA: "R" },
+        {_id: 7, title: "American History X", director: 
+            "Tony Kaye", yearReleased: 1998, leadActors: 
+            ["Edward Norton", "Edward Furlong", 
+            "Beverly D'Angelo", "Ethan Suplee"], lengthInMin: 
+            119, genre: ["Crime", "Drama"], MPAA: "R" },
+        {_id: 8, title: "Psycho", director: "Alfred Hitchcock", 
+            yearReleased: 1960, leadActors: ["Anthony Perkins", 
+            "Vera Miles", "John Gavin", "Janet Leigh"], 
+            lengthInMin: 109, genre: ["Horror", "Mystery", 
+            "Thriller"], MPAA: "R" },
+        {_id: 9, title: "The Pianist", director: "Roman Polanski", 
+            yearReleased: 2002, leadActors: ["Adrien Brody", 
+            "Emilia Fox", "Michal Zebrowski", "Ed Stoppard"], 
+            lengthInMin: 150, genre: ["Biography", "Drama", 
+            "Music"], MPAA: "R" },
+        {_id: 10, title: "Gladiator", director: "Ridley Scott", 
+            yearReleased: 2000, leadActors: ["Russell Crowe", 
+            "Joaquin Phoenix", "Connie Nielsen", "Oliver Reed"], 
+            lengthInMin: 155, genre: ["Action", "Adventure", 
+            "Drama"], MPAA: "R" },
+]);
+// output: 10 docs added to movies collection, as validated in
+    // results pane
+
+db.movies.find({});
+// output: all doc's from collection previewed in results pane
+
+db.movies.find({lengthInMin: {$gt: 120}});
+// output: doc's with movies longer than 2 hours previewed in
+    // results pane
+
+db.movies.find({leadActors: 'Tom Hanks'});
+// output: one doc with Tom Hanks previewed in results pane
+
+db.movies.find({director: {$ne: 'Mel Brooks'}});
+// output: all docs with movies that weren't directed by Mel
+    // Brooks previewed in results pane
+
+db.movies.find({genre: 'Mystery'});
+// output: 2 doc's with Mystery movies previewd in results pane
+
+db.movies.find({$and: [{lengthInMin: {$gt: 120}}, 
+    {leadActors:'Tom Hanks'}, {director: {$ne: 'Mel Brooks'}}, 
+    {genre: 'Mystery'}]});
+// output: one doc previewed in results pane for movies that 
+    // is longer than 2 hours
+    // includes Tom Hanks as a lead actor
+    // does not have Mel Brooks as a director
+    // is the Mystery genre
