@@ -1,0 +1,292 @@
+// DSO108 - Databases
+	// Lesson 8 - Updating Documents
+
+// Page 1 - Overview
+    // From workshop: https://vimeo.com/420531957
+
+db.breakfast.insertMany([
+    {
+        day: 'Monday',
+        person: 'Meredith',
+        components: ['Coffee', 'Tea', 'Waffels', 'Eggs'],
+        rating: 10,
+        eatAgain: true
+    },
+    {
+        day: 'Tuesday',
+        person: 'Cameron',
+        components: ['Coffee', 'Tea', 'English Muffins', 
+            'Eggs'],
+        rating: '',
+        eatAgain: true
+    },
+    {
+        day: 'Thursday',
+        person: 'Cameron',
+        components: ['Coffee', 'Tea', 'Pancakes'],
+        rating: 10,
+        eatAgain: true
+    },
+    {
+        day: 'Friday',
+        person: 'Meredith',
+        components: ['Pepsi', 'Breakfast Tacos'],
+        rating: 5,
+        eatAgain: false
+    }
+]);
+db.breakfast.countDocuments({});
+// output: collection created with 4 doc's, as validated in 
+    // results pane
+
+db.breakfast.find({});
+// output: full collection previewed in results pane
+
+db.breakfast.updateOne({rating: 5},{$set: {rating: 6}});
+db.breakfast.find({rating: 6});
+// output: rating field updated for relevant doc and
+    // updated doc previewed in results pane
+
+db.breakfast.updateOne({day: 'Friday'},{$set: {rating: 7}});
+db.breakfast.find({rating: 7});
+// output: rating field updated for relevant doc and
+    // updated doc previewed in results pane
+
+db.breakfast.updateMany({rating: 10},{$set: {rating: 9}});
+db.breakfast.find({rating: 9});
+// output: rating field updated for relevant docs and
+    // updated docs previewed in results pane
+
+db.breakfast.updateOne({day: 'Tuesday'},{$set: {rating: 4}},
+    {upsert: true});
+db.breakfast.find({rating: 4});
+// output: rating field updated for relevant doc and
+    // updated doc previewed in results pane
+
+db.breakfast.updateMany({rating: 9},{$inc: {rating: 1}});
+db.breakfast.find({rating: 10});
+// output: rating field updated for relevant docs and
+    // updated docs previewed in results pane
+
+db.breakfast.updateMany({rating: 10},{$inc: {rating: -1}});
+db.breakfast.find({rating: 9});
+// output: rating field updated for relevant docs and
+    // updated docs previewed in results pane
+
+db.breakfast.updateMany({rating: 9},{$mul: {rating: 2}});
+db.breakfast.find({rating: 18});
+// output: rating field updated for relevant docs and
+    // updated docs previewed in results pane
+
+db.breakfast.updateMany({person: 'Meredith'},{$set: 
+    {person: 'Cameron'}});
+db.breakfast.find({person: 'Cameron'});
+// output: person field updated for relevant docs and
+    // updated docs previewed in results pane
+
+db.breakfast.updateMany({eatAgain: true},{$unset: 
+    {eatAgain: ''}});
+db.breakfast.find({});
+// output: eatAgain field deleted from relevant docs and all 
+    // docs previewed in results pane
+
+db.breakfast.updateMany({},{$unset: {eatAgain: ''}});
+db.breakfast.find({});
+// output: eatAgain field deleted from all docs and all docs 
+    // previewed in results pane
+
+db.breakfast.updateMany({},{$rename: 
+    {components: 'foodItems'}});
+db.breakfast.find({});
+// output: components field name updated for all docs and 
+    // all docs previewed in results pane
+
+db.breakfast.deleteOne({day: 'Monday'});
+db.breakfast.find({});
+// output: deleted relevant document and all remaining docs 
+    // previewed in results pane
+
+db.breakfast.deleteMany({foodItems: 'Coffee'});
+db.breakfast.find({});
+// output: deleted relevant documents and all remaining docs 
+    // previewed in results pane
+
+db.breakfast.drop();
+db.breakfast.find({});
+// output: collection deleted, as validated in results pane
+
+db.breakfast.insertMany([
+    {
+        day: 'Monday',
+        person: 'Meredith',
+        components: ['Coffee', 'Tea', 'Waffels', 'Eggs'],
+        rating: 10,
+        eatAgain: true
+    },
+    {
+        day: 'Tuesday',
+        person: 'Cameron',
+        components: ['Coffee', 'Tea', 'English Muffins', 
+            'Eggs'],
+        rating: '',
+        eatAgain: true
+    },
+    {
+        day: 'Thursday',
+        person: 'Cameron',
+        components: ['Coffee', 'Tea', 'Pancakes'],
+        rating: 10,
+        eatAgain: true
+    },
+    {
+        day: 'Friday',
+        person: 'Meredith',
+        components: ['Pepsi', 'Breakfast Tacos'],
+        rating: 5,
+        eatAgain: false
+    }
+]);
+db.breakfast.countDocuments({});
+// output: collection re-created with 4 doc's, as validated 
+    // in results pane
+
+db.breakfast.createIndex({person: 1});
+// output: index created, as validated in results pane
+
+db.breakfast.dropIndex({person: 1});
+// output: index deleted, as validated in results pane
+
+
+
+// Page 2 - Updating Documents
+db.appusers.updateOne({_id: 1},{$set: {middleName:
+    'Gertrude'}},{upsert: true});
+db.appusers.find({'_id': 1});
+// output: middle name updated for doc and previewed in
+    // results pane
+
+db.appusers.updateMany({firstName: 'Tommy'},{$set: {middleName:
+    'Henry'}},{upsert: true});
+db.appusers.find({middleName: 'Henry'});
+// output: middle name updated for all relevant doc's - which
+    // turned out to be only 1, and previewed in results pane
+
+
+// Page 3 - Update Options
+db.appusers.updateOne({firstName: 'Coderboy'},{$set: 
+    {middleName: 'Cole'}},{upsert: true});
+db.appusers.find({middleName: 'Cole'});
+// output: middle name updated for doc and previewed in
+    // results pane
+
+db.appusers.update({favoriteColor: 'Blue'},{$set: 
+    {favoriteColor: 'Perriwinkle'}},{upsert: true, 
+    multi: true});
+db.appusers.find({favoriteColor: 'Perriwinkle'});
+// output: favorite color updated for all relevant docs and
+    // previewed in results pane
+    // note: VS Code app says 'update' has been deprecated so 
+        // updateMany, updateOne, or bulkWrite should be used
+        // instead
+
+
+// Page 4 - Update Operators
+db.appusers.updateOne({_id: 1},{$currentDate: 
+    {signedUp: true}});
+db.appusers.find({},{signedUp: 1});
+// output: signedUp field added to relevant doc with current
+    // timestamp, and previewed in results pane
+
+db.products.insertOne(
+    {
+     _id: 1,
+    quantity: 10,
+    metrics: {
+        orders: 2,
+        ratings: 3.5
+    }
+    }
+);
+db.products.find({});
+// output: collection created with a single doc, and previewed 
+    // in results pane
+
+db.products.update({_id: 1},{$inc: {quantity: -2, 
+    'metrics.orders': 1}});
+db.products.find({});
+// output: updated related doc to reduce quantity and increase
+    // orders, and previewed in results pane
+
+db.scores.insertOne({_id: 1, highScore: 800, lowScore: 200});
+db.scores.find({});
+// output: collection created with a single doc, and previewed
+    // in results pane
+
+db.scores.update({_id: 1},{$min: {lowScore: 150}});
+db.scores.find({});
+// output: lowScore updated for relevant doc and previewed in
+    // results pane
+
+db.scores.update({_id: 1},{$max: {highScore: 950}});
+db.scores.find({});
+// output: highScore updated for relevant doc and previewed in
+    // results pane
+
+db.inventory.find({status: 'A'},{qty: 1});
+// output: previewed quantities for relevant docs in results
+    // pane
+
+db.inventory.updateMany({status: 'A'},{$mul: {qty: 2}});
+db.inventory.find({status: 'A'});
+// output: quantity updated for relevant doc's and previewed 
+    // in results pane
+
+db.inventory.update({item: 'journal'},{$set: {status: 'B'}});
+db.inventory.find({item: 'journal'},{status: 1});
+// output: status updated for relevant doc and previewed 
+    // in results pane
+
+db.inventory.update({item: 'journal'},{$unset: {status: 'B'}});
+db.inventory.find({item: 'journal'},{status: 1});
+// output: status deleted from relevant doc and previewed in 
+    // results pane
+
+db.inventory.updateMany({},{$rename: {qty: 'quantity'}});
+db.inventory.find({},{quantity: 1});
+// output: qty renamed to quantity for relevant doc's and 
+    // previewed in results pane
+
+
+// Page 5 - More Update Queries
+db.appusers.replaceOne({_id: 2},
+    {
+        _id: 2,
+        lastName: 'Beck',
+        firstName: 'Rupert',
+        age: 19,
+        favoriteColor: 'Green'
+    })
+db.appusers.find({_id: 2});
+// output: relevant doc replaced and previewed in results pane
+
+db.scores.insertMany([
+    {_id: 1521, team:'Fearful Mallards', score: 25000},
+    {_id: 2231, team: 'Tactful Mooses', score: 23500},
+    {_id: 4511, team: 'Aquatic Ponies', score: 19250},
+    {_id: 5331, team: 'Cuddly Zebras', score: 15235},
+    {_id: 3412, team: 'Garrulous Bears', score: 22300}]);
+// output: 5 new doc's added to collection, as validated in 
+    // results pane
+
+db.scores.findOneAndReplace({score: {$lt: 20000}},
+    {team: 'Observant Badgers', score: 20000});
+// output: first relevant doc previewed and replaced
+
+db.scores.find({team: 'Observant Badgers'});
+// output: doc replaced above previewed in results pane
+
+db.scores.findOneAndUpdate({_id: 1521},{$set: {score: 25983}});
+// output: first relevant doc previewed and updated
+
+db.scores.find({_id: 1521});
+// output: doc updated above previewed in results pane
