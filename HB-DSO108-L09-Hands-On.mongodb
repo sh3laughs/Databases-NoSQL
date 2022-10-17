@@ -1,0 +1,175 @@
+// DSO108 - Databases
+	// Lesson 9 - Deleting and Indexing Documents
+
+// Page 9 – Hands-On
+// Part 1
+    // 1.  Start off by deleting the entire collection cars.
+        // Take a screenshot of the query as well as the list of 
+            // your collections in Atlas to be sure this 
+            // collection has been deleted.
+db.cars.drop();
+// cars collection deleted
+
+    // 2.  Next, run the following query to recreate the cars 
+        // collection.
+        // The following includes more cars than before.
+db.cars.insertMany([
+  {
+    make: "Hyundai",
+    model: "Santa Fe",
+    price: 8000,
+    year: 2003,
+    used: true,
+    color: "Black"
+  },
+  {
+    make: "BMW",
+    model: "ALPINA B6 Gran Coupe",
+    price: 124300,
+    year: 2017,
+    used: false,
+    color: "Mediterranean Blue Metallic"
+  },
+  {
+    make: "Subaru",
+    model: "Crosstrek 2.0i Premium",
+    price: 22595,
+    year: 2014,
+    used: true,
+    color: "Sunshine Orange"
+  },
+  {
+    make: "Ford",
+    model: "F-350 XL",
+    price: 33705,
+    year: 2017,
+    used: false,
+    color: "Race Red"
+  },
+  {
+    make: "Toyota",
+    model: "Acura MDX",
+    price: 28800,
+    year: 2014,
+    used: true,
+    color: "Graphite Luster Metallic"
+  },
+  {
+    make: "BMW",
+    model: "5 Series 535i Sedan",
+    price: 18995,
+    year: 2013,
+    used: true,
+    color: "Space Gray Metallic"
+  },
+  {
+    make: "Ford",
+    model: "Escape",
+    price: 7480,
+    year: 2011,
+    used: true,
+    color: "Sterling Grey Metallic"
+  },
+  {
+    make: "Subaru",
+    model: "Impreza",
+    price: 18495,
+    year: 2018,
+    used: false,
+    color: "Crimson Red Pearl"
+  },
+  {
+    make: "Toyota",
+    model: "Yaris",
+    price: 15635,
+    year: 2018,
+    used: false,
+    color: "Super White"
+  },
+  {
+    make: "Honda",
+    model: "Civic LX",
+    price: 14999,
+    year: 2016,
+    used: true,
+    color: "Crystal Black Pearl"
+  },
+  {
+    make: "Volkswagen",
+    model: "Jetta 1.4T S",
+    price: 19495,
+    year: 2018,
+    used: false,
+    color: "Silk Blue Metallic"
+  }
+]);
+// cars collection (re)created with 11 doc's
+
+    // 3.  Create an index on the price field.
+db.cars.createIndex({price: 1})
+// index created for price in ascending order
+
+    // 4.  Create an index on the non-used field for the cars 
+        // collection.
+db.cars.createIndex({make: 1, model: 1, price: -1, year: -1,
+    color: 1})
+// compound index created with make, model , and color in 
+    // ascending order and price and year descending
+
+    // 5.  Find and delete all documents with a year before 2012.
+        // Be sure to do a find with your filtering criteria 
+            // first to be sure you're about to delete the 
+            // correct documents.
+db.cars.countDocuments({year: {$lt: 2012}});
+db.cars.find({year: {$lt: 2012}});
+// 2 docs previewed for cars older than 2012
+
+db.cars.deleteMany({year: {$lt: 2012}});
+// 2 docs deleted for cars older than 2012
+
+    // 6.  Delete the first document that is a BMW.
+db.cars.countDocuments({make: 'BMW'});
+db.cars.find({make: 'BMW'});
+// 2 docs previewed for BMW's
+
+db.cars.deleteOne({make: 'BMW'});
+// first BMW from cars collection deleted
+
+    // 7.  Drop the index created on the non-used cars created 
+        // above.
+db.cars.getIndexes();
+// all indexes for cars collection previewed
+
+db.cars.dropIndex('make_1_model_1_price_-1_year_-1_color_1');
+// index deleted
+
+// Part 2
+    // You are currently working for a car dealership. They 
+    // sell both used and new cars. The company would like to 
+    // easily and efficiently search through their cars using 
+    // the "make" of the car. Recently, they made the searching 
+    // efficient using the price of the car, but that is no 
+    // longer needed since they will now be using the make of the 
+    // vehicles. Please reflect that in the database. Also, the 
+    // company has decided to no longer sell Volkswagens and has 
+    // already sold the last Volkswagen on the lot so they would 
+    // like you to reflect that in the database as well.
+
+    // Step 1. Create index for make
+db.cars.createIndex({make: 1});
+// index created for make in ascending order
+
+    // Step 2. Delete index for price
+db.cars.getIndexes();
+// all indexes for cars collection previewed
+
+db.cars.dropIndex('price_1');
+// index deleted
+
+    // Step 3. Delete all VW's
+db.cars.countDocuments({make: 'Volkswagen'});
+db.cars.find({make: 'Volkswagen'});
+// doc previewed for the 1 Volkswagon
+
+db.cars.deleteOne({make: 'Volkswagen'});
+// doc with Volkswagon deleted from cars collection

@@ -1,0 +1,167 @@
+// DSO108 - Databases
+	// Lesson 9 - Deleting and Indexing Documents
+
+// Page 2 – Deleting Documents
+db.cars.insertMany([
+  {
+    make: 'Hyundai',
+    model: 'Santa Fe',
+    price: 8000,
+    year: 2003,
+    used: true,
+    color: 'Black'
+  },
+  {
+    make: 'BMW',
+    model: 'ALPINA B6 Gran Coupe',
+    price: 124300,
+    year: 2017,
+    used: false,
+    color: 'Mediterranean Blue Metallic'
+  },
+  {
+    make: 'Subaru',
+    model: 'Crosstrek 2.0i Premium',
+    price: 22595,
+    year: 2014,
+    used: true,
+    color: 'Sunshine Orange'
+  },
+  {
+    make: 'Ford',
+    model: 'F-350 XL',
+    price: 33705,
+    year: 2017,
+    used: false,
+    color: 'Race Red'
+  },
+  {
+    make: 'Toyota',
+    model: 'Acura MDX',
+    price: 28800,
+    year: 2014,
+    used: true,
+    color: 'Graphite Luster Metallic'
+  },
+  {
+    make: 'Volkswagen',
+    model: 'Jetta 1.4T S',
+    price: 19495,
+    year: 2018,
+    used: false,
+    color: 'Silk Blue Metallic'
+  }
+]);
+// cars collection created and 6 doc's inserted
+
+db.cars.deleteMany({});
+db.cars.find({});
+// all doc's deleted from cars collection
+
+	// re-ran query above to insert doc's in collection
+
+db.cars.deleteMany({used: true});
+// 3 doc's deleted, according to results pane, for the
+    // used cars in the cars collection
+
+db.cars.deleteMany({price: {$lt: 30000}});
+// 1 doc deleted, according to results pane, for the 
+    // only car that costs < $30k in the cars collection
+
+	// deleted all doc's again and then re-ran query 
+        // above again to insert doc's in collection
+
+db.cars.deleteOne({used: true});
+// deleted the first doc in cars collection for a used 
+    // car
+
+db.cars.deleteOne({price: {$lt: 30000}});
+// deleted the first doc in cars collection for a car 
+    // that cost < $30k
+
+	// deleted all doc's again and then re-ran query 
+        // above again to insert doc's in collection
+
+db.cars.findOneAndDelete({price: 8000});
+// doc previewed for car that costs $8k, which was 
+    // deleted from cars collection
+
+db.cars.find({price: 8000});
+// no doc returned, confirming it was deleted
+
+db.products.drop();
+// products collection deleted
+
+// Page 4 - Single and Compound Indexing
+db.scores.createIndex({score: 1});
+// ascending index added to score field
+
+db.scores.createIndex({score: -1});
+// index updated to be descending on score field
+
+db.products.insertOne(
+    {
+    item: "Banana",
+    category: ["food", "produce", "grocery"],
+    location: "4th Street Store",
+    stock: 4,
+    type: "cases"
+    }
+);
+// products collection created with a single doc
+
+db.products.createIndex({item: 1, stock: 1});
+// compound index created on item and stock fields, in 
+    // ascending order for both
+
+db.products.find({item: 'Banana'});
+// banana doc previewed from products collection
+
+db.products.find({item: 'Banana', stock: {$gt: 5}});
+// no relevant docs to preview from products collection
+
+db.scores.insertOne(
+    {
+    score: 1034,
+    location: { state: "NY", city: "New York" }
+    }
+);
+// doc added to scores collection
+
+db.scores.createIndex({'location.state': 1});
+// ascending index added to state field
+
+db.scores.createIndex({location: 1});
+// ascending index added to location field
+
+db.scores.find({location: {city: 'New York', state: 'NY'}});
+// no doc returned - and I can't figure out why
+
+db.scores.find({'location.city': 'New York', 
+    'location.state': 'NY'});
+// doc returned
+
+db.cars.createIndex({make: 1, model: -1});
+// compound index created on make field as ascending and model
+    // field as descending order
+
+db.cars.getIndexes();
+// indexes for cars collection previewed – this includes the
+    // default index and the make/model one created just
+    // above
+
+db.cars.dropIndex('make_1_model_-1');
+// index deleted
+
+db.cars.createIndex({make: 1});
+db.cars.createIndex({model: -1});
+// created two new indexes on cars collection - make field as 
+    // ascending and model field as descending order
+
+db.cars.getIndexes();
+// indexes for cars collection previewed – this includes the
+    // default index and the make and model ones created just
+    // above
+
+db.cars.dropIndexes();
+// all non-default indexes deleted from cars collection
