@@ -1,0 +1,481 @@
+// DSO108 - Databases
+	// Lesson 10 - Sharding, More Methods and Project
+
+// Page 5 – Final Project
+
+    // From workshop
+db.aamilne.insertMany([
+    {
+        name: 'Pooh Bear',
+        animal: 'bear',
+        location: 'hundred acre woods',
+        info: {book: true, saying: 'oh bother'}
+    },
+    {
+        name: 'Piglet',
+        animal: 'pig',
+        location: 'hundred acre woods',
+        info: {book: true, saying: 'oh dear oh dear'}
+    },
+    {
+        name: 'Eyeore',
+        animal: 'donkey',
+        location: 'hundred acre woods',
+        info: {book: true, saying: 'thanks for noticing'}
+    },
+    {
+        name: 'Christopher Robin',
+        animal: 'human',
+        location: 'hundred acre woods',
+        info: {book: true, 
+            saying: 'tut tut it looks like rain'}
+    }
+]);
+// collection created with 4 doc's
+
+db.aamilne.updateOne({name: 'Christopher Robin'},
+    {$set: {location: 'school'}});
+
+db.aamilne.find({name: 'Christopher Robin'});
+// CR's location updated to school
+
+db.aamilne.updateMany({},{$unset: {location: ''}});
+
+db.aamilne.find();
+// location removed from all doc's
+
+db.aamilne.updateMany({'info.book': true},
+    {$set: {location: 'hundred acre woods', 
+        'info.book': false}});
+
+db.aamilne.find({},{'info.book': 1});
+// location re-added to all doc's and book updated to be
+    // false for all doc's
+
+db.aamilne.createIndex({name: 1});
+// alphabetically indexed name
+
+db.aamilne.updateMany({},{$rename: 
+    {'info.saying': 'saying'}});
+
+db.aamilne.find({},{saying: 1});
+// un-embedded the saying field from within info, to be
+    // it's own "top-level" field
+
+db.aamilne.updateMany({},{$rename: 
+    {saying: 'info.saying'}});
+
+db.aamilne.find({},{'info.saying': 1});
+// re-embedded the saying field within info
+
+db.aamilne.drop();
+// collection dropped and re-added with initial code
+    // above
+
+db.aamilne.createIndex({animal: 1});
+// alphabetically indexed animal
+
+db.aamilne.updateMany({},{$rename: 
+    {animal: 'CharacterAnimal'}});
+
+db.aamilne.find({},{CharacterAnimal: 1});
+// renamed animal to CharacterAnimal
+
+    // Final project
+
+// Part 1
+    // You have just been hired at a startup company. They 
+    // currently only have ten employees, but they need to 
+    // be included in the database. So far, they have only 
+    // been tracked within an excel sheet. Your boss would 
+    // like you to create a new collection in Atlas named 
+    // employees. Take a look at the following data and the 
+    // notes listed below before inserting any data:
+        // Notes:
+        // The Birthday field should have a data type of 
+            // Date.
+        // The Position Name, Remote, and Full Time fields 
+            // should be within an embedded document called 
+            // position.
+        // Remote and Full Time fields should have boolean 
+            // values.
+
+db.employees.insertMany([
+    {
+        name: 'Alison Davidson',
+        birthday: Date('1975-04-05'),
+        address: '874 W. Oak Place',
+        city: 'Gary',
+        state: 'Indiana',
+        position: {
+            positionName: 'Customer Support',
+            remote: true,
+            fullTime: true
+        }
+    },
+    {
+        name: 'Henry Chapelton',
+        birthday: Date('1980-09-29'),
+        address: '9324 E. Vista Way',
+        city: 'Tempe',
+        state: 'Arizona',
+        position: {
+            positionName: 'Customer Support',
+            remote: false,
+            fullTime: true
+        }
+    },
+    {
+        name: 'Alex Miller',
+        birthday: Date('1983-11-22'),
+        address: '244 Price Road',
+        city: 'Mesa',
+        state: 'Arizona',
+        position: {
+            positionName: 'Customer Support',
+            remote: false,
+            fullTime: false
+        }
+    },
+    {
+        name: 'Carly Nielson',
+        birthday: Date('1987-08-04'),
+        address: '678 W. Westward Road',
+        city: 'Phoenix',
+        state: 'Arizona',
+        position: {
+            positionName: 'Office Manager',
+            remote: false,
+            fullTime: true
+        }
+    },
+    {
+        name: 'Tom Talbot',
+        birthday: Date('1989-12-30'),
+        Address: '12 Oakland Way',
+        city: 'Chandler',
+        state: 'Arizona',
+        position: {
+            positionName: 'Inventory Manager',
+            remote: false,
+            fullTime: true
+        }
+    },
+    {
+        name: 'Mary Crawley',
+        birthday: Date('1980-07-06'),
+        address: '1010 Granite Way',
+        city: 'Charlotte',
+        state: 'North Carolina',
+        position: {
+            positionName: 'Human Resources',
+            remote: true,
+            fullTime: true
+        }
+    },
+    {
+        name: 'Daisy Baxter',
+        birthday: Date('1987-09-09'),
+        address: '990 E. 84th St.',
+        city: 'Tempe',
+        state: 'Arizona',
+        position: {
+            positionName: 'CEO',
+            remote: false,
+            fullTime: true
+        }
+    },
+    {
+        name: 'William Coyle',
+        birthday: Date('1991-10-11'),
+        address: '944 W. 16th St.',
+        city: 'Phoenix',
+        state: 'Arizona',
+        position: {
+            positionName: 'Intern',
+            remote: false,
+            fullTime: false
+        }
+    },
+    {
+        name: 'Edith Bates',
+        birthday: Date('1990-07-28'),
+        address: '7 E. 20th Pl.',
+        city: 'Chandler',
+        state: 'Arizona',
+        position: {
+            positionName: 'Customer Support',
+            remote: false,
+            fullTime: true
+        }
+    },
+    {
+        name: 'Gwen Harding',
+        birthday: Date('1986-10-11'),
+        address: '234 W. 48th. St.',
+        city: 'Phoenix',
+        state: 'Arizona',
+        position: {
+            positionName: 'Office Assistent',
+            remote: false,
+            fullTime: true
+        }
+    }
+]);
+// created a new collection with 10 doc's
+
+db.employees.find();
+// collection previewed
+
+    // It's been about a month since you have inserted all 
+    // employees into the database. There have been a 
+    // couple of changes to the company. The CEO decided 
+    // that he no longer wants remote employees, so they 
+    // have transferred the remote employees and they are 
+    // now living in Arizona. Alison Davidson now lives at 
+    // 777 E. 1st St. # 120 Tempe, AZ and Mary Crawley now 
+    // lives at 8322 W. Vista Pl. Scottsdale, AZ. Since all 
+    // employees now all live in Arizona, there is no need 
+    // to have a field named "state" within this collection, 
+    // so please remove it. Lastly, they would like very 
+    // efficient searching using the "position" field 
+    // (remember that field includes a document with three 
+    // other fields).
+ 
+        // Drop: remote, state
+db.employees.updateMany({},{$unset: 
+    {'position.remote': '', state: ''}});
+// remote and state fields removed from all doc's
+
+db.employees.find();
+// collection previewed
+
+        // Update address and city: Alison Davidson: 
+            // 777 E. 1st St. # 120 Tempe
+db.employees.updateOne({name: 'Alison Davidson'},
+    {$set: {address: '777 E. 1st St. # 120', 
+    city: 'Tempe'}});
+// Alison's address and city updated
+
+db.employees.find({name: 'Alison Davidson'});
+// Alison's doc previewed
+
+        // Update address and city: Mary Crawley: 
+            // 8322 W. Vista Pl. Scottsdale
+db.employees.updateOne({name: 'Mary Crawley'},
+    {$set: {address: '8322 W. Vista Pl.', 
+    city: 'Scottsdale'}});
+// Mary's address and city updated
+
+db.employees.find({name: 'Mary Crawley'});
+// Mary's doc previewed
+
+        // index: position
+db.employees.createIndex({position: 1});
+// position indexed
+
+
+// Part 2
+    // You are currently working for a company who wants 
+    // to build an app similar to Spotify. Below is a list 
+    // of data for different songs. Please insert this 
+    // data into a new collection named songs.
+        // Notes:
+        // The artist, album, and releaseYear fields should 
+            // be an embedded document named details.
+        // Be sure that the songId and releaseYear fields 
+            // have a type of number.
+
+db.songs.insertMany([
+    {
+        songId: 1,
+        title: 'Girls Just Want To Have Fun',
+        details: {
+            artist: 'Cyndi Lauper',
+            album: "She's So Unusual",
+            releaseYear: 1983
+        }
+    },
+    {
+        songId: 2,
+        title: "Hips Don't Lie",
+        details: {
+            artist: 'Shakira feat. Wyclef Jean',
+            album: 'Oral Fixation Vol. 2',
+            releaseYear: 2006
+        }
+    },
+    {
+        songId: 3,
+        title: 'Poker Face',
+        details: {
+            artist: 'Lady Gaga',
+            album: 'The Fame',
+            releaseYear: 2008
+        }
+    },
+    {
+        songId: 4,
+        title: 'Wannabe',
+        details: {
+            artist: 'Spice Girls',
+            album: 'Spice',
+            releaseYear: 1996
+        }
+    },
+    {
+        songId: 5,
+        title: 'California Gurls',
+        details: {
+            artist: 'Katy Perry feat. Snoop Dogg',
+            album: 'Teenage Dream	',
+            releaseYear: 2010
+        }
+    },
+    {
+        songId: 6,
+        title: 'Bye, Bye, Bye',
+        details: {
+            artist: 'NSYNC',
+            album: 'No Strings Attached',
+            releaseYear: 2000
+        }
+    },
+    {
+        songId: 7,
+        title: 'I Will Always Love You',
+        details: {
+            artist: 'Whitney Houston',
+            album: 
+    'I Will Always Love You: The Best of Whitney Houston',
+            releaseYear: 2012
+        }
+    },
+    {
+        songId: 8,
+        title: 'Baby One More Time',
+        details: {
+            artist: 'Britney Spears',
+            album: 'Baby One More Time',
+            releaseYear: 1999
+        }
+    },
+    {
+        songId: 9,
+        title: 'Vogue',
+        details: {
+            artist: 'Madonna',
+            album: "I'm Breathless",
+            releaseYear: 1990
+        }
+    },
+    {
+        songId: 10,
+        title: 'Rolling in the Deep',
+        details: {
+            artist: 'Adele',
+            album: '21',
+            releaseYear: 2011
+        }
+    },
+    {
+        songId: 11,
+        title: '1234',
+        details: {
+            artist: 'Feist',
+            album: 'The Reminder',
+            releaseYear: 2007
+        }
+    },
+    {
+        songId: 12,
+        title: 'Elastic Heart',
+        details: {
+            artist: 'Sia',
+            album: 'The Hunger Games: Catching Fire Soundtrack',
+            releaseYear: 2015
+        }
+    },
+    {
+        songId: 13,
+        title: 'Oops! I Did It Again',
+        details: {
+            artist: 'Britney Spears',
+            album: 'Oops! I Did It Again',
+            releaseYear: 2000
+        }
+    },
+    {
+        songId: 14,
+        title: 'Bad Romance',
+        details: {
+            artist: 'Lady Gaga',
+            album: 'The Fame Monster',
+            releaseYear: 2009
+        }
+    },
+    {
+        songId: 15,
+        title: 'Lose Control',
+        details: {
+            artist: 'Missy Elliot',
+            album: 'The Cookbook',
+            releaseYear: 2005
+        }
+    },
+    {
+        songId: 16,
+        title: "U Can't Touch This",
+        details: {
+            artist: 'MC Hammer',
+            album: "Please Hammer, Don't Hurt 'Em",
+            releaseYear: 1990
+        }
+    },
+    {
+        songId: 17,
+        title: 'Thriller',
+        details: {
+            artist: 'Michael Jackson',
+            album: 'Thriller',
+            releaseYear: 1982
+        }
+    },
+    {
+        songId: 18,
+        title: 'Single Ladies',
+        details: {
+            artist: 'Beyonce',
+            album: 'I am... Sasha Fierce',
+            releaseYear: 2008
+        }
+    },
+    {
+        songId: 19,
+        title: 'Rhythm Nation',
+        details: {
+            artist: 'Janet Jackson',
+            album: "Janet Jackson's Rhythm Nation 1814",
+            releaseYear: 1989
+        }
+    }
+])
+// created a new collection with 19 doc's
+
+db.songs.find();
+// collection previewed
+
+    // Next, your company has run into some things they would 
+        // like to be changed within the database:
+        // The title field needs to be renamed to songTitle, 
+            // so it is clearer to the developers working with 
+            // the data.
+        // They would like to have the artist field to be 
+            // outside the details document but the album and 
+            // releaseYear should stay within that document.
+db.songs.updateMany({},{$rename: 
+    {title: 'songTitle', 'details.artist': 'artist'}});
+// title field renamed to songTitle and artist field un-embedded
+
+db.songs.find();
+// collection previewed
